@@ -17,18 +17,15 @@ void uniform_distribution(
         // generate initial local seed per thread
         const std::uint32_t local_seed = 
             hashers::MurmurHash<std::uint32_t>::hash(seed+tid);
-            Rng rng{local_seed};
-        T x;
+        
+        Rng rng{local_seed};
 
         // grid-stride loop
         const auto grid_stride = blockDim.x * gridDim.x;
         for(std::uint64_t i = tid; i < n; i += grid_stride)
         {
-            // generate random element
-            x = rng.template next<T>();
-
-            // write output
-            out[i] = x;
+            // generate random element and write to output
+            out[i] = rng.template next<T>();
         }
     })
     ; CUERR
@@ -62,7 +59,7 @@ int main ()
     cudaMemset(data_d, 0, sizeof(data_t)*n); CUERR
     THROUGHPUTSTOP(memset_zeroes, sizeof(data_t), n)
 
-    // generate the values and measure throughput
+    // generate uniform random numbers and measure throughput
     THROUGHPUTSTART(generate_random)
     uniform_distribution<data_t, rng_t>(
         data_d, 
@@ -72,7 +69,7 @@ int main ()
 
     cudaMemcpy(data_h, data_d, sizeof(data_t)*n, D2H); CUERR
 
-    // do something with drawm random numbers
+    // do something with drawn random numbers
     for(std::uint64_t i = 0; i < 10; i++)
     {
         std::cout << data_h[i] << std::endl;
