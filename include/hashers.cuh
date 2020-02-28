@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include "cudahelpers/cuda_helpers.cuh"
+#include "cuda_helpers.cuh"
 
 /*! \brief hash functions
 */
@@ -10,7 +10,7 @@ namespace hashers
 
 /*! \brief hash function proposed by NVIDIA
 */
-class NvidiaHash 
+class NvidiaHash
 {
 
 public:
@@ -29,7 +29,7 @@ public:
     * \return hash of \c x
     */
     HOSTDEVICEQUALIFIER INLINEQUALIFIER
-    static hash_type hash(key_type x) noexcept 
+    static hash_type hash(key_type x) noexcept
     {
         x = (x + 0x7ed55d16) + (x << 12);
         x = (x ^ 0xc761c23c) ^ (x >> 19);
@@ -45,7 +45,7 @@ public:
 
 /*! \brief hash function proposed by Mueller
 */
-class MuellerHash 
+class MuellerHash
 {
 
 public:
@@ -64,7 +64,7 @@ public:
     * \return hash of \c x
     */
     HOSTDEVICEQUALIFIER INLINEQUALIFIER
-    static constexpr hash_type hash(key_type x) noexcept 
+    static constexpr hash_type hash(key_type x) noexcept
     {
         x = ((x >> 16) ^ x) * 0x45d9f3b;
         x = ((x >> 16) ^ x) * 0x45d9f3b;
@@ -80,7 +80,7 @@ public:
  * \tparam K key type (\c std::uint32_t or std::uint64_t)
 */
 template<class K>
-class MurmurHash 
+class MurmurHash
 {
 
 public:
@@ -94,12 +94,12 @@ public:
     */
     template<class T>
     HOSTDEVICEQUALIFIER INLINEQUALIFIER
-    static constexpr T hash(T x) noexcept 
+    static constexpr T hash(T x) noexcept
     {
         static_assert(
-            std::is_same<T, key_type>::value, 
+            std::is_same<T, key_type>::value,
             "invalid key type");
-            
+
         return hash_(x);
     }
 
@@ -109,7 +109,7 @@ private:
     * \return hash of \c x
     */
     HOSTDEVICEQUALIFIER INLINEQUALIFIER
-    static constexpr std::uint32_t hash_(std::uint32_t x) noexcept 
+    static constexpr std::uint32_t hash_(std::uint32_t x) noexcept
     {
         x ^= x >> 16;
         x *= 0x85ebca6b;
@@ -118,13 +118,13 @@ private:
         x ^= x >> 16;
         return x;
     }
-    
+
     /*! \brief hash function
     * \param[in] x key to be hashed
     * \return hash of \c x
     */
     HOSTDEVICEQUALIFIER INLINEQUALIFIER
-    static constexpr std::uint64_t hash_(std::uint64_t x) noexcept 
+    static constexpr std::uint64_t hash_(std::uint64_t x) noexcept
     {
         x ^= x >> 33;
         x *= 0xff51afd7ed558ccd;
@@ -141,7 +141,7 @@ private:
  * \tparam H hash type
 */
 template<class K, class H = std::uint32_t>
-class IdentityMap 
+class IdentityMap
 {
 
 public:
@@ -161,7 +161,7 @@ public:
     * \return hash of \c x
     */
     HOSTDEVICEQUALIFIER INLINEQUALIFIER
-    static constexpr hash_type hash(key_type x) noexcept 
+    static constexpr hash_type hash(key_type x) noexcept
     {
         return hash_type{x};
     }

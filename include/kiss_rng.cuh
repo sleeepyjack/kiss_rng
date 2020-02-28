@@ -1,14 +1,14 @@
 #pragma once
 
 #include <cstdint>
-#include "cudahelpers/cuda_helpers.cuh"
+#include "cuda_helpers.cuh"
 #include "hashers.cuh"
 
 /*! \brief KISS random number generator for host and CUDA device
 * \tparam T base type of RNG state (\c std::uint32_t or \c std::uint64_t)
 */
 template<class T>
-class Kiss 
+class Kiss
 {
     static_assert(
         std::is_same<T, std::uint32_t>::value ||
@@ -23,12 +23,12 @@ public:
     constexpr explicit Kiss(T seed) noexcept
     {
         using Hasher = hashers::MurmurHash<T>;
-        
+
         w = !seed ? 4294967295 : seed;
 
         // scramble until the initial state looks good
         // #pragma unroll 8 // throws warning in host code
-        for (std::uint8_t iter = 0; iter < 8; iter++) 
+        for (std::uint8_t iter = 0; iter < 8; iter++)
         {
             x = Hasher::hash(w);
             y = Hasher::hash(x);
@@ -54,7 +54,7 @@ private:
     T z; //< partial state z
     T w; //< partial state w
 
-}; // class Kiss 
+}; // class Kiss
 
 /*! \brief \c std::uint32_t generator
 * \return uniform random \c std::uint32_t

@@ -10,7 +10,7 @@ INC := $(wildcard $(INCDIR)/*)
 all: example
 
 example: example.cu
-	$(NVCC) $(NVCCFLAGS) -Iinclude example.cu -o example.out
+	$(NVCC) $(NVCCFLAGS) -Iinclude -Iext/cudahelpers example.cu -o example.out
 
 debug: NVCCFLAGS += -g -O0 -Xptxas -v -UNDEBUG -D_DEBUG
 debug: all
