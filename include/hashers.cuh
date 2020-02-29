@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include "cuda_helpers.cuh"
+#include "../ext/cudahelpers/cuda_helpers.cuh"
 
 /*! \brief hash functions
 */
