@@ -5,6 +5,11 @@
 
 /*! \brief hash functions
 */
+namespace kiss
+{
+
+/*! \brief hash functions
+*/
 namespace hashers
 {
 
@@ -169,3 +174,5 @@ public:
 }; // class IdentityMap
 
 } // namespace hashers
+
+} // namespace kiss

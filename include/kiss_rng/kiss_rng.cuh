@@ -4,6 +4,9 @@
 #include <helpers/cuda_helpers.cuh>
 #include "hashers.cuh"
 
+namespace kiss
+{
+
 /*! \brief KISS random number generator for host and CUDA device
 * \tparam T base type of RNG state (\c std::uint32_t or \c std::uint64_t)
 */
@@ -147,3 +150,5 @@ constexpr double Kiss<std::uint32_t>::next<double>() noexcept
 
     return q;
 }
+
+} // namespace kiss

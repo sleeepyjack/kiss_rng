@@ -18,7 +18,7 @@ void uniform_distribution(
 
         // generate initial local seed per thread
         const std::uint32_t local_seed =
-            hashers::MurmurHash<std::uint32_t>::hash(seed+tid);
+            kiss::hashers::MurmurHash<std::uint32_t>::hash(seed+tid);
 
         Rng rng{local_seed};
 
@@ -40,7 +40,7 @@ int main ()
 {
     // define the data types to be generated
     using data_t = std::uint64_t;
-    using rng_t = Kiss<data_t>;
+    using rng_t = kiss::Kiss<data_t>;
 
     // number of values to draw
     static constexpr std::uint64_t n = 1UL << 28;
