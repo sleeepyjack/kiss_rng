@@ -1,5 +1,5 @@
 #include <iostream>
-#include <kiss_rng/kiss_rng.cuh>
+#include <kiss/kiss.cuh>
 #include <helpers/cuda_helpers.cuh>
 #include <helpers/timers.cuh>
 
