@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include "cuda_helpers.cuh"
+#include <helpers/cuda_helpers.cuh>
 #include "hashers.cuh"
 
 /*! \brief KISS random number generator for host and CUDA device

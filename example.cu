@@ -1,23 +1,25 @@
 #include <iostream>
-#include "kiss_rng.cuh"
+#include <kiss_rng/kiss_rng.cuh>
+#include <helpers/cuda_helpers.cuh>
+#include <helpers/timers.cuh>
 
 template<class T, class Rng>
 HOSTQUALIFIER  INLINEQUALIFIER
 void uniform_distribution(
-    T * const out, 
-    const std::uint64_t n, 
+    T * const out,
+    const std::uint64_t n,
     const std::uint32_t seed) noexcept
 {
     // execute kernel
-    lambda_kernel<<<4096, 32>>>
+    helpers::lambda_kernel<<<4096, 32>>>
     ([=] DEVICEQUALIFIER
     {
         const std::uint32_t tid = blockDim.x * blockIdx.x + threadIdx.x;
 
         // generate initial local seed per thread
-        const std::uint32_t local_seed = 
+        const std::uint32_t local_seed =
             hashers::MurmurHash<std::uint32_t>::hash(seed+tid);
-        
+
         Rng rng{local_seed};
 
         // grid-stride loop
@@ -37,7 +39,7 @@ void uniform_distribution(
 int main ()
 {
     // define the data types to be generated
-    using data_t = std::uint64_t; 
+    using data_t = std::uint64_t;
     using rng_t = Kiss<data_t>;
 
     // number of values to draw
@@ -55,17 +57,17 @@ int main ()
     cudaMalloc(&data_d, sizeof(data_t)*n); CUERR
 
     // initialize th allocated memory (contents my inner paranoia)
-    THROUGHPUTSTART(memset_zeroes)
+    helpers::GpuTimer memset_timer("memset");
     cudaMemset(data_d, 0, sizeof(data_t)*n); CUERR
-    THROUGHPUTSTOP(memset_zeroes, sizeof(data_t), n)
+    memset_timer.print_throughput(sizeof(data_t), n);
 
     // generate uniform random numbers and measure throughput
-    THROUGHPUTSTART(generate_random)
+    helpers::GpuTimer generate_timer("generate random");
     uniform_distribution<data_t, rng_t>(
-        data_d, 
-        n, 
+        data_d,
+        n,
         seed); CUERR
-    THROUGHPUTSTOP(generate_random, sizeof(data_t), n)
+    generate_timer.print_throughput(sizeof(data_t), n);
 
     cudaMemcpy(data_h, data_d, sizeof(data_t)*n, D2H); CUERR
 
